@@ -153,58 +153,101 @@
 
       <!-- api.web3forms.com/submit -->
 
-      <form action="https://formsubmit.co/mhdminhajtk@gmail.com" method="POST" id="contact-form" class="email-form"
-        onsubmit="return validateForm()">
-
-        <input type="hidden" name="access_key" value="00d6136bea88c6056f9be6a73af13fd4">
+      <form id="contact-form" class="email-form">
 
         <div class="row gy-4">
 
           <div class="col-md-6">
-            <input id="form_name" type="text" name="name" class="form-control" placeholder="Your Name">
+            <input id="form_name" type="text" name="from_name" class="form-control" placeholder="Your Name" required>
           </div>
 
-
-
-          <div class="col-md-6 ">
-            <input id="email_id" type="email" class="form-control" name="email" placeholder="Your Email">
-          </div>
-
-          <div class="col-md-12">
-            <input id="subject" type="text" class="form-control" name="subject" placeholder="Subject">
+          <div class="col-md-6">
+            <input id="email_id" type="email" name="from_email" class="form-control" placeholder="Your Email" required>
           </div>
 
           <div class="col-md-12">
-            <textarea id="message" class="form-control" name="message" rows="6" placeholder="Message"></textarea>
+            <input id="subject" type="text" name="subject" class="form-control" placeholder="Subject" required>
+          </div>
+
+          <div class="col-md-12">
+            <textarea id="message" name="message" class="form-control" rows="6" placeholder="Message"
+              required></textarea>
           </div>
 
           <div class="col-md-12 text-center">
             <button class="bt" type="submit" id="submit-btn">Send Message</button>
+            <p id="status" style="margin-top:10px;color:green;"></p>
           </div>
 
         </div>
       </form>
 
+
+      <!-- EmailJS Library -->
+      <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+      <!-- Public Key -->
       <script>
-        // function validateForm() {
-        //   const name = document.getElementById("form_name").value.trim();
-        //   const email = document.getElementById("email_id").value.trim();
+        (function () {
+          emailjs.init("f1GcHEouqc1JLudAA");
+        })();
+      </script>
 
-        //   const nameRegex = /^[a-zA-Z\s]{2,30}$/;
-        //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      <!-- SEND EMAIL SCRIPT -->
+      <script>
+        document.getElementById("contact-form").addEventListener("submit", function (e) {
 
-        //   if (name == number) {
-        //     alert("Please enter a valid name");
-        //     return false;
-        //   }
+          e.preventDefault();
 
-        //   if (!emailRegex.test(email)) {
-        //     alert("Please enter a valid email address.");
-        //     return false;
-        //   }
+          const btn = document.getElementById("submit-btn");
+          const status = document.getElementById("status");
 
-        //   return true; // Submit the form
-        // }
+          btn.innerText = "Sending...";
+
+          emailjs.sendForm(
+            "service_0hceq5v",
+            "template_cmxyigd",
+            this
+          )
+            .then(function () {
+              btn.innerText = "Send Message";
+              status.innerText = "Message sent successfully!";
+              document.getElementById("contact-form").reset();
+            }, function (error) {
+              btn.innerText = "Send Message";
+              status.style.color = "red";
+              status.innerText = "Failed to send message!";
+              console.log(error);
+            });
+        });
+      </script>
+
+      <!-- NAME VALIDATION SCRIPT (PASTE HERE) -->
+      <script>
+        const nameInput = document.getElementById("form_name");
+        const nameError = document.getElementById("name-error");
+
+        nameInput.addEventListener("keypress", function (e) {
+
+          const char = String.fromCharCode(e.keyCode);
+
+          if (!/^[a-zA-Z\s]+$/.test(char)) {
+            e.preventDefault();
+            nameError.style.display = "block";
+          } else {
+            nameError.style.display = "none";
+          }
+        });
+
+        nameInput.addEventListener("input", function () {
+
+          if (!/^[a-zA-Z\s]*$/.test(this.value)) {
+            nameError.style.display = "block";
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+          } else {
+            nameError.style.display = "none";
+          }
+        });
       </script><!-- End Contact Form -->
 
       </div>
